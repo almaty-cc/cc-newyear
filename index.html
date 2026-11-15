@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Новогодний вечер Creative City</title>
+<link rel="preload" href="f/bask.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="f/champ.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"CCBask";src:url(f/bask.woff2) format("woff2");font-display:swap}
+@font-face{font-family:"CCScript";src:url(f/champ.woff2) format("woff2");font-display:swap}
+:root{--W:min(100vw,480px);--u:calc(var(--W) / 1080);--navy:#03183a;--ease:cubic-bezier(.22,.61,.36,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#020b1f}
+body{background:radial-gradient(ellipse at 50% 0%,#0d2a66 0,#04122e 55%,#020b1f 100%) fixed;min-height:100vh;font-family:"CCBask",Baskerville,"Times New Roman",serif;color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+.page{width:var(--W);margin:0 auto;box-shadow:0 0 90px rgba(0,0,0,.6);overflow:hidden;background:#0a1a3f}
+.stage{position:relative;width:100%;aspect-ratio:1080/13439;overflow:hidden}
+.L{position:absolute}
+.L img{display:block;width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.bgfill img{width:100%;height:100%;object-fit:cover}
+.maplink{position:absolute;border-radius:999px;z-index:5}
+.maplink:focus-visible{outline:2px solid #fff;outline-offset:4px}
+
+/* reveal */
+[data-r]{opacity:0;translate:0 calc(var(--u)*36);transition:opacity 1.2s var(--ease),translate 1.4s var(--ease),clip-path 1.8s var(--ease)}
+[data-r].in{opacity:1;translate:0 0}
+.envelope[data-r]{translate:0 calc(var(--u)*90);scale:.96;transition:opacity 1.6s var(--ease),translate 1.8s var(--ease),scale 1.8s var(--ease)}
+.envelope[data-r].in{scale:1}
+.hands[data-r]{translate:0 calc(var(--u)*120);transition-duration:1.6s,2s}
+.rib-in[data-r]{translate:-60% 0;opacity:0;transition:opacity 1.4s var(--ease),translate 2.4s var(--ease)}
+.rib-in[data-r].in{translate:0 0}
+.rib-hero[data-r]{translate:-25% calc(var(--u)*-20)}
+.rib-hero[data-r].in{translate:0 0}
+[data-wipe]{clip-path:inset(-20% 100% -20% 0)}
+[data-wipe].in{clip-path:inset(-20% -5% -20% 0);transition:opacity .6s ease,translate 1.2s var(--ease),clip-path 2.2s cubic-bezier(.45,.05,.3,1)}
+
+/* idle motion */
+.pearl img{animation:float 6s ease-in-out infinite alternate}
+@keyframes float{from{transform:translateY(calc(var(--u)*-9))}to{transform:translateY(calc(var(--u)*9))}}
+.ball img{transform-origin:50% 0;animation:sway 7s ease-in-out infinite alternate}
+@keyframes sway{from{transform:rotate(-2.2deg)}to{transform:rotate(2.2deg)}}
+.star img{animation:twinkle 7s ease-in-out infinite}
+@keyframes twinkle{0%,100%{transform:scale(.94) rotate(-3deg);opacity:.78}50%{transform:scale(1.04) rotate(3deg);opacity:1}}
+.rib-hero img{animation:drift 10s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translateX(calc(var(--u)*-14)) rotate(-.6deg)}to{transform:translateX(calc(var(--u)*10)) rotate(.6deg)}}
+.rib-in img{animation:drift 12s ease-in-out infinite alternate;animation-delay:-3s}
+.envelope img{animation:breathe 9s ease-in-out infinite alternate}
+@keyframes breathe{from{transform:translateY(calc(var(--u)*-6))}to{transform:translateY(calc(var(--u)*6))}}
+.par{will-change:transform}
+
+
+/* countdown digits */
+.timer{position:absolute;inset:0;pointer-events:none}
+.dg{position:absolute;text-align:center;font-size:calc(var(--u)*125);line-height:1;color:var(--navy);font-variant-numeric:lining-nums tabular-nums;overflow:hidden;height:1.05em}
+.dg span{display:inline-block}
+.dg span.flip{animation:flip .6s var(--ease)}
+@keyframes flip{from{transform:translateY(-.35em);opacity:0}to{transform:none;opacity:1}}
+
+/* curtain */
+.curtain{position:fixed;inset:0;z-index:50;pointer-events:auto;cursor:pointer}
+.curtain .half{position:absolute;top:0;bottom:0;width:50%;overflow:hidden;transition:transform 2.2s cubic-bezier(.7,0,.2,1)}
+.curtain .l{left:0;box-shadow:inset -18px 0 30px -18px rgba(0,0,0,.6)}
+.curtain .r{right:0;box-shadow:inset 18px 0 30px -18px rgba(0,0,0,.6)}
+.curtain .half img{position:absolute;top:0;height:100%;width:200%;object-fit:cover}
+.curtain .l img{left:0}.curtain .r img{right:0}
+.curtain .half:after{content:"";position:absolute;top:0;bottom:0;width:2px;background:linear-gradient(180deg,transparent,rgba(230,230,240,.7),transparent)}
+.curtain .l:after{right:0}.curtain .r:after{left:0}
+.curtain .mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;transition:opacity .8s ease,transform 1.2s var(--ease);z-index:2}
+.curtain .mark img{width:min(46vw,210px);display:block;margin:0 auto}
+.curtain .mark div{margin-top:18px;font-family:"CCBask",serif;font-size:13px;letter-spacing:.35em;color:rgba(255,255,255,.8);text-transform:uppercase;padding-left:.35em}
+.curtain .mark{opacity:0;animation:markin 1.2s .2s var(--ease) forwards}
+@keyframes markin{from{opacity:0;transform:translate(-50%,-40%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.curtain.open .mark{opacity:0!important;animation:none}
+.curtain.open .l{transform:translateX(-101%)}
+.curtain.open .r{transform:translateX(101%)}
+.curtain.gone{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  [data-r],[data-wipe]{opacity:1!important;translate:none!important;scale:1!important;clip-path:none!important;transition:none!important}
+  .L img{animation:none!important}
+  .par{transform:none!important}
+  .curtain{display:none}
+}
+</style>
+</head>
+<body class="lock">
+<div class="curtain" id="curtain" aria-hidden="true">
+  <div class="half l"><img src="a/bg-dbd1fbaac0.webp" alt=""></div>
+  <div class="half r"><img src="a/bg-dbd1fbaac0.webp" alt=""></div>
+  <div class="mark"><img src="a/logo-7cd5239073.webp" alt=""><div>приглашение</div></div>
+</div>
+<main class="page">
+  <div class="stage" id="stage">
+<div class="L bg" style="left:0.0000%;top:0.0000%;width:100.0000%"><img src="a/bg-75020e5a93.webp" alt="" style=""></div>
+<div class="L envelope" data-r data-hero style="left:2.3148%;top:2.7309%;width:95.9259%"><img src="a/envelope-28af401382.webp" alt="" style=""></div>
+<div class="L ball par" data-r data-hero data-p="0.09" style="left:71.2963%;top:-2.3439%;width:31.2037%"><img src="a/ball-2c02f83953.webp" alt="" style="animation-duration:8.4s;animation-delay:-2.4s"></div>
+<div class="L ball par" data-r data-hero data-p="0.05" style="left:-8.1481%;top:-0.0372%;width:38.1481%"><img src="a/ball-c488f983bd.webp" alt="" style="animation-duration:6.2s;animation-delay:-3.2s"></div>
+<div class="L pearl" data-r data-hero style="left:32.3148%;top:12.2107%;width:7.4074%"><img src="a/pearl-f6ac347573.webp" alt="" style="animation-duration:6.1s;animation-delay:-0.3s"></div>
+<div class="L pearl" data-r data-hero style="left:83.8889%;top:12.9995%;width:7.4074%"><img src="a/pearl-df4b3286af.webp" alt="" style="animation-duration:6.5s;animation-delay:-0.2s"></div>
+<div class="L pearl" data-r data-hero style="left:76.4815%;top:2.2100%;width:7.4074%"><img src="a/pearl-df4b3286af.webp" alt="" style="animation-duration:6.3s;animation-delay:-0.4s"></div>
+<div class="L pearl" data-r data-hero style="left:65.4630%;top:6.7267%;width:7.4074%"><img src="a/pearl-ca83ca6e29.webp" alt="" style="animation-duration:5.3s;animation-delay:-2.5s"></div>
+<div class="L pearl" data-r data-hero style="left:22.4074%;top:9.5692%;width:7.4074%"><img src="a/pearl-b237ffd819.webp" alt="" style="animation-duration:7.5s;animation-delay:-0.7s"></div>
+<div class="L pearl" data-r data-hero style="left:19.4444%;top:0.9152%;width:7.4074%"><img src="a/pearl-db16a3901d.webp" alt="" style="animation-duration:5.7s;animation-delay:-3.8s"></div>
+<div class="L text" data-r data-hero style="left:35.7407%;top:4.7251%;width:28.6111%"><img src="a/text-6dfd75e093.webp" alt="приглашение на" style=""></div>
+<div class="L ribbon rib-hero" data-r data-hero style="left:-14.7222%;top:-0.3869%;width:98.3333%"><img src="a/ribbon-e8e5d7798d.webp" alt="" style=""></div>
+<div class="L text" data-r data-hero style="left:20.2778%;top:4.9929%;width:59.4444%"><img src="a/text-5380b64d82.webp" alt="новогодний" style=""></div>
+<div class="L script" data-r data-hero data-wipe style="left:27.1296%;top:5.4989%;width:38.5185%"><img src="a/script-fb3be8e43e.webp" alt="Вечер" style=""></div>
+<div class="L bg" style="left:0.0000%;top:14.2793%;width:100.0000%"><img src="a/bg-8c3e0053f0.webp" alt="" style=""></div>
+<div class="L text" data-r style="left:35.7407%;top:21.3781%;width:28.5185%"><img src="a/text-a0a026dee0.webp" alt="20 27" style=""></div>
+<div class="L text" data-r style="left:28.6111%;top:26.1403%;width:42.8704%"><img src="a/text-dedc43a8a1.webp" alt="17 декабря  ·  18:00 " style=""></div>
+<div class="L text" data-r style="left:41.7593%;top:27.7699%;width:16.5741%"><img src="a/text-50ff5acb41.webp" alt="creative city" style=""></div>
+<div class="L logo" data-r style="left:43.5185%;top:12.8655%;width:13.0556%"><img src="a/logo-bebec11db7.webp" alt="" style=""></div>
+<div class="L text" data-r style="left:18.5185%;top:18.7812%;width:63.0556%"><img src="a/text-1bc68d9988.webp" alt="На новогодний корпоратив.  Встретимся, чтобы насладиться  атмос" style=""></div>
+<div class="L script" data-r data-wipe style="left:15.4630%;top:16.7126%;width:69.0741%"><img src="a/script-41d64d866a.webp" alt="Приглашаем Вас" style=""></div>
+<div class="L pearl" data-r style="left:46.2963%;top:14.8300%;width:7.4074%"><img src="a/pearl-df4b3286af.webp" alt="" style="animation-duration:7.8s;animation-delay:-3.5s"></div>
+<div class="L pearl" data-r style="left:87.3148%;top:26.9514%;width:7.4074%"><img src="a/pearl-50313eafe7.webp" alt="" style="animation-duration:6.2s;animation-delay:-5.9s"></div>
+<div class="L pearl" data-r style="left:12.0370%;top:24.8977%;width:7.4074%"><img src="a/pearl-5f56a21b5f.webp" alt="" style="animation-duration:5.1s;animation-delay:-5.2s"></div>
+<div class="L pearl" data-r style="left:89.4444%;top:19.8006%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:5.9s;animation-delay:-0.9s"></div>
+<div class="L star par" data-r data-p="0.05" style="left:-29.2593%;top:11.3848%;width:72.9630%"><img src="a/star-e76199101d.webp" alt="" style="animation-duration:7.7s;animation-delay:-3.4s"></div>
+<div class="L pearl" data-r style="left:-3.1481%;top:21.0804%;width:6.9444%"><img src="a/pearl-0d70a26170.webp" alt="" style="animation-duration:7.0s;animation-delay:-0.6s"></div>
+<div class="L bg" style="left:-0.1852%;top:28.5587%;width:101.1111%"><img src="a/bg-b292f05e68.webp" alt="" style=""></div>
+<div class="L ball par" data-r data-p="0.07" style="left:-0.2778%;top:33.7897%;width:25.6481%"><img src="a/ball-8a1d9af97a.webp" alt="" style="animation-duration:6.9s;animation-delay:-3.3s"></div>
+<div class="L calendar" data-r style="left:7.2222%;top:31.2226%;width:87.6852%"><img src="a/calendar-abbd268d5a.webp" alt="" style=""></div>
+<div class="L script" data-r data-wipe style="left:20.3704%;top:29.7344%;width:26.2037%"><img src="a/script-3caa953a01.webp" alt="Дата " style=""></div>
+<div class="L script" data-r data-wipe style="left:35.4630%;top:30.6124%;width:54.9074%"><img src="a/script-460494a54e.webp" alt="Мероприятия " style=""></div>
+<div class="L text" data-r style="left:34.5370%;top:32.7852%;width:30.9259%"><img src="a/text-fa508d5364.webp" alt="декабрь 2026" style=""></div>
+<div class="L text" data-r style="left:33.0556%;top:40.7248%;width:33.9815%"><img src="a/text-d4a1883baf.webp" alt="четверг · 18:00" style=""></div>
+<div class="L star par" data-r data-p="0.05" style="left:66.2037%;top:25.6269%;width:71.5741%"><img src="a/star-49c3ecd0cd.webp" alt="" style="animation-duration:7.7s;animation-delay:-3.7s"></div>
+<div class="L pearl" data-r style="left:6.0185%;top:32.0634%;width:7.4074%"><img src="a/pearl-624bd7d777.webp" alt="" style="animation-duration:6.5s;animation-delay:-3.2s"></div>
+<div class="L pearl" data-r style="left:80.9259%;top:39.8318%;width:7.4074%"><img src="a/pearl-31693ca33c.webp" alt="" style="animation-duration:7.3s;animation-delay:-2.8s"></div>
+<div class="L pearl" data-r style="left:-2.4074%;top:41.3200%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:7.8s;animation-delay:-2.2s"></div>
+<div class="L ball par" data-r data-p="0.07" style="left:-1.4815%;top:28.5884%;width:23.9815%"><img src="a/ball-c5819ee63f.webp" alt="" style="animation-duration:8.0s;animation-delay:-4.2s"></div>
+<div class="L bg" style="left:0.0000%;top:42.2353%;width:100.0000%"><img src="a/bg-8c3e0053f0.webp" alt="" style=""></div>
+<div class="L star par" data-r data-p="0.07" style="left:69.3519%;top:47.8458%;width:12.9630%"><img src="a/star-c5fdbbdc9a.webp" alt="" style="animation-duration:6.2s;animation-delay:-1.8s"></div>
+<div class="L star par" data-r data-p="0.11" style="left:6.9444%;top:47.5779%;width:44.4444%"><img src="a/star-8aa99a328e.webp" alt="" style="animation-duration:8.6s;animation-delay:-4.4s"></div>
+<div class="L star par" data-r data-p="0.09" style="left:58.2407%;top:51.0752%;width:44.4444%"><img src="a/star-bf12c9b616.webp" alt="" style="animation-duration:7.8s;animation-delay:-0.4s"></div>
+<div class="L pearl" data-r style="left:17.8704%;top:42.8752%;width:7.4074%"><img src="a/pearl-a23f1a9d74.webp" alt="" style="animation-duration:6.5s;animation-delay:-1.0s"></div>
+<div class="L pearl" data-r style="left:75.1852%;top:50.2790%;width:7.4074%"><img src="a/pearl-84840266fe.webp" alt="" style="animation-duration:6.0s;animation-delay:-5.6s"></div>
+<div class="L pearl" data-r style="left:34.7222%;top:54.0070%;width:7.4074%"><img src="a/pearl-73e06359a2.webp" alt="" style="animation-duration:6.3s;animation-delay:-5.8s"></div>
+<div class="L pearl" data-r style="left:77.2222%;top:56.2319%;width:7.4074%"><img src="a/pearl-f07121e711.webp" alt="" style="animation-duration:5.2s;animation-delay:-3.3s"></div>
+<div class="L pearl" data-r style="left:6.0185%;top:49.6317%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:7.4s;animation-delay:-4.9s"></div>
+<div class="L script" data-r data-wipe style="left:13.9815%;top:44.6908%;width:71.9444%"><img src="a/script-7b8097fe23.webp" alt="Обратный отсчет" style=""></div>
+<div class="L text" data-r style="left:17.9167%;top:43.9765%;width:64.1667%"><img src="a/text-donachala.webp" alt="до начала новогоднего вечера"></div>
+<div class="L text" data-r style="left:12.6852%;top:47.3770%;width:5.7407%"><img src="a/text-13d8935f49.webp" alt="дней" style=""></div>
+<div class="L text" data-r style="left:35.7407%;top:47.4068%;width:6.7593%"><img src="a/text-b09f22f14e.webp" alt="часов" style=""></div>
+<div class="L text" data-r style="left:58.7963%;top:47.4142%;width:7.5926%"><img src="a/text-12f97c7bdd.webp" alt="минут" style=""></div>
+<div class="L text" data-r style="left:82.1296%;top:47.3994%;width:8.4259%"><img src="a/text-23bded31a0.webp" alt="секунд" style=""></div>
+<div class="L bg" style="left:0.0000%;top:57.1248%;width:100.0000%"><img src="a/bg-75020e5a93.webp" alt="" style=""></div>
+<div class="L pearl" data-r style="left:77.2222%;top:59.4613%;width:7.4074%"><img src="a/pearl-71b1a08697.webp" alt="" style="animation-duration:6.0s;animation-delay:-2.1s"></div>
+<div class="L pearl" data-r style="left:1.2963%;top:70.2284%;width:7.4074%"><img src="a/pearl-ccf76caf4c.webp" alt="" style="animation-duration:6.5s;animation-delay:-4.8s"></div>
+<div class="L pearl" data-r style="left:6.7593%;top:57.9805%;width:7.4074%"><img src="a/pearl-eaad1057cd.webp" alt="" style="animation-duration:5.2s;animation-delay:-0.6s"></div>
+<div class="L pearl" data-r style="left:92.9630%;top:57.5415%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:5.8s;animation-delay:-4.2s"></div>
+<div class="L script" data-r data-wipe style="left:20.1852%;top:59.9003%;width:37.0370%"><img src="a/script-7cf92ab233.webp" alt="Ресторан" style=""></div>
+<div class="L script" data-r data-wipe style="left:55.3704%;top:60.5700%;width:33.9815%"><img src="a/script-kosmos.webp" alt="Kosmos"></div>
+<div class="L text" data-r style="left:30.6481%;top:59.1264%;width:38.7037%"><img src="a/text-5f8823fb12.webp" alt="место проведения" style=""></div>
+<div class="L photo" data-r style="left:0.0000%;top:62.6460%;width:100.0000%"><img src="a/photo-d6f483f038.webp" alt="" style=""></div>
+<div class="L star par" data-r data-p="0.05" style="left:64.0741%;top:65.5331%;width:71.9444%"><img src="a/star-b8a430ba22.webp" alt="" style="animation-duration:6.2s;animation-delay:-4.2s"></div>
+<div class="L star par" data-r data-p="0.11" style="left:2.3148%;top:61.1355%;width:16.3889%"><img src="a/star-5ab9078e15.webp" alt="" style="animation-duration:6.9s;animation-delay:-2.3s"></div>
+<div class="L button" data-r style="left:25.4630%;top:69.5513%;width:48.9815%"><img src="a/button-28ba84c28f.webp" alt="" style=""></div>
+<a class="maplink" href="https://2gis.kz/almaty/search/%D0%9A%D0%BE%D1%81%D0%BC%D0%BE%D1%81%20%D0%90%D0%BB%D1%8C-%D0%A4%D0%B0%D1%80%D0%B0%D0%B1%D0%B8%20140%2F2" target="_blank" rel="noopener" aria-label="Посмотреть на карте 2ГИС" style="left:25.4630%;top:69.5513%;width:48.9815%;height:0.7813%"></a>
+<div class="L text" data-r style="left:34.9074%;top:69.8936%;width:30.1852%"><img src="a/text-8a1b4b9aba.webp" alt="посмотреть на карте" style=""></div>
+<div class="L text" data-r style="left:28.0556%;top:68.3310%;width:43.8889%"><img src="a/text-e7fd05b42a.webp" alt="Проспект Аль-Фараби, 140/2" style=""></div>
+<div class="L logo" data-r style="left:36.7593%;top:62.1252%;width:26.5741%"><img src="a/logo-47e24c922d.webp" alt="" style=""></div>
+<div class="L hands" data-r style="left:0.0000%;top:48.3146%;width:100.0000%"><img src="a/hands-9ba0b09006.webp" alt="" style=""></div>
+<div class="L bg" style="left:0.0000%;top:71.4488%;width:100.0000%"><img src="a/bg-8c3e0053f0.webp" alt="" style=""></div>
+<div class="L ribbon rib-in" data-r style="left:-16.9444%;top:69.0379%;width:133.7037%"><img src="a/ribbon-4446d3bb90.webp" alt="" style=""></div>
+<div class="L pearl" data-r style="left:86.4815%;top:78.5847%;width:6.9444%"><img src="a/pearl-b03caf9df6.webp" alt="" style="animation-duration:7.0s;animation-delay:-0.1s"></div>
+<div class="L pearl" data-r style="left:13.9815%;top:72.4235%;width:6.9444%"><img src="a/pearl-ca36e03bc0.webp" alt="" style="animation-duration:6.4s;animation-delay:-1.0s"></div>
+<div class="L pearl" data-r style="left:52.5926%;top:83.3693%;width:7.4074%"><img src="a/pearl-2a6c56795b.webp" alt="" style="animation-duration:5.4s;animation-delay:-0.4s"></div>
+<div class="L pearl" data-r style="left:86.0185%;top:84.4482%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:7.3s;animation-delay:-0.8s"></div>
+<div class="L pearl" data-r style="left:3.3333%;top:80.4078%;width:6.9444%"><img src="a/pearl-7fd95cfe93.webp" alt="" style="animation-duration:5.7s;animation-delay:-2.3s"></div>
+<div class="L pearl" data-r style="left:12.0370%;top:77.1486%;width:7.4074%"><img src="a/pearl-73324c1f9d.webp" alt="" style="animation-duration:7.6s;animation-delay:-0.5s"></div>
+<div class="L script" data-r data-wipe style="left:26.5741%;top:73.9341%;width:46.7593%"><img src="a/script-ea79e13368.webp" alt="Greek   Party" style=""></div>
+<div class="L text" data-r style="left:37.9630%;top:73.0039%;width:24.0741%"><img src="a/text-fcc4eb46dc.webp" alt="ТЕМА ВЕЧЕРА" style=""></div>
+<div class="L text" data-r style="left:39.6296%;top:78.5698%;width:20.8333%"><img src="a/text-dd1bafcd1b.webp" alt="ДРЕСС-КОД" style=""></div>
+<div class="L text" data-r style="left:18.8889%;top:80.8989%;width:62.3148%"><img src="a/text-67f8b57875.webp" alt="БЕЛЫЙ ·  ЗОЛОТОЙ ·  СЕРЕБРО ·  СИНИЙ ·  КРАСНЫЙ" style=""></div>
+<div class="L text" data-r style="left:22.2222%;top:82.1639%;width:55.7407%"><img src="a/text-0566349159.webp" alt="total black - под запретом " style=""></div>
+<div class="L outline" data-r style="left:17.7778%;top:81.7918%;width:64.4444%"><img src="a/outline-7b196d2453.webp" alt="" style=""></div>
+<div class="L wreath" data-r style="left:13.7037%;top:73.9415%;width:72.3148%"><img src="a/wreath-3a372d864c.webp" alt="" style=""></div>
+<div class="L swatch" data-r style="left:19.6296%;top:79.2767%;width:60.8333%"><img src="a/swatch-6ebdd6358b.webp" alt="" style=""></div>
+<div class="L text" data-r style="left:15.0000%;top:75.9878%;width:69.9074%"><img src="a/text-db5669392d.webp" alt="Вдохновляйтесь эстетикой Древней Греции: благородные ткани и вы" style=""></div>
+<div class="L bg bg7" style="left:0.0000%;top:85.7207%;width:100.0000%"><img src="a/bg-dbd1fbaac0.webp" alt="" style=""></div>
+<div class="L star par" data-r data-p="0.11" style="left:-33.8889%;top:94.6425%;width:68.3333%"><img src="a/star-fcfdd0b6e0.webp" alt="" style="animation-duration:7.2s;animation-delay:-1.7s"></div>
+<div class="L star par" data-r data-p="0.07" style="left:54.4444%;top:84.2176%;width:36.9444%"><img src="a/star-6845337549.webp" alt="" style="animation-duration:8.5s;animation-delay:-5.2s"></div>
+<div class="L pearl" data-r style="left:84.8148%;top:95.1857%;width:7.4074%"><img src="a/pearl-7c599d1ad6.webp" alt="" style="animation-duration:5.8s;animation-delay:-2.5s"></div>
+<div class="L pearl" data-r style="left:14.1667%;top:96.5994%;width:7.4074%"><img src="a/pearl-b77091d5b2.webp" alt="" style="animation-duration:6.1s;animation-delay:-5.3s"></div>
+<div class="L pearl" data-r style="left:82.7778%;top:87.8934%;width:7.4074%"><img src="a/pearl-a05dfd9f3f.webp" alt="" style="animation-duration:7.9s;animation-delay:-0.9s"></div>
+<div class="L logo" data-r style="left:40.9259%;top:89.0022%;width:18.1481%"><img src="a/logo-7cd5239073.webp" alt="" style=""></div>
+<div class="L script" data-r data-wipe style="left:23.0556%;top:91.1526%;width:53.7963%"><img src="a/script-b4c139a5e5.webp" alt="До Встречи" style=""></div>
+<div class="L text" data-r style="left:40.0000%;top:94.1365%;width:20.0000%"><img src="a/text-38b8450931.webp" alt="17.12.2026" style=""></div>
+<div class="L text" data-r style="left:27.3148%;top:94.7690%;width:45.4630%"><img src="a/text-59564889ed.webp" alt="Ресторан Kosmos · 18:00" style=""></div>
+<div class="L text" data-r style="left:24.4444%;top:92.5739%;width:51.2037%"><img src="a/text-970212388d.webp" alt="Пусть этот вечер станет красивым завершением нашего общего года" style=""></div>
+<div class="L text" data-r style="left:36.1111%;top:98.3034%;width:27.8704%"><img src="a/text-56e12066e4.webp" alt="С наступающим новым 2027 годом! " style=""></div>
+<div class="L ball par" data-r data-p="0.07" style="left:77.4074%;top:88.5259%;width:21.5741%"><img src="a/ball-3f836b377f.webp" alt="" style="animation-duration:6.4s;animation-delay:-4.0s"></div>
+<div class="L ball par" data-r data-p="0.05" style="left:1.6667%;top:85.7430%;width:21.5741%"><img src="a/ball-9f0b7560db.webp" alt="" style="animation-duration:7.2s;animation-delay:-3.5s"></div>
+<div class="timer" id="timer" aria-live="off" aria-label="Обратный отсчёт"><div class="dg" style="left:3.5648%;top:46.4971%;width:27.7778%"><span>00</span></div><div class="dg" style="left:26.6204%;top:46.4971%;width:27.7778%"><span>00</span></div><div class="dg" style="left:50.0000%;top:46.4971%;width:27.7778%"><span>00</span></div><div class="dg" style="left:73.0556%;top:46.4971%;width:27.7778%"><span>00</span></div></div>
+  </div>
+</main>
+<script>
+(function(){
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var els=[].slice.call(document.querySelectorAll('[data-r]'));
+  var hero=els.filter(function(e){return e.hasAttribute('data-hero')});
+  var started=false;
+
+  /* scroll reveal */
+  var io=null;
+  function observe(){
+    if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
+    io=new IntersectionObserver(function(es){
+      var vis=es.filter(function(e){return e.isIntersecting}).map(function(e){return e.target});
+      vis.sort(function(a,b){return a.getBoundingClientRect().top-b.getBoundingClientRect().top});
+      vis.forEach(function(t,i){t.style.transitionDelay=Math.min(i*0.12,0.9)+'s';t.classList.add('in');io.unobserve(t)});
+    },{threshold:0,rootMargin:'0px 0px -12% 0px'});
+    els.forEach(function(e){if(!e.hasAttribute('data-hero'))io.observe(e)});
+  }
+  function playHero(){
+    var order={'envelope':0,'ball':1,'ribbon':1,'text':2,'script':3,'pearl':4,'star':4,'logo':5};
+    hero.forEach(function(e){
+      var k=e.classList[1];var d=(order[k]!=null?order[k]:3)*0.35;
+      if(k==='text')d=0.9; if(k==='script')d=1.25;
+      e.style.transitionDelay=d+'s';e.classList.add('in');
+    });
+  }
+  function start(){if(started)return;started=true;document.body.classList.remove('lock');playHero();observe()}
+
+  /* curtain */
+  var c=document.getElementById('curtain');
+  function open(){if(c.classList.contains('open'))return;c.classList.add('open');setTimeout(start,700);setTimeout(function(){c.classList.add('gone')},2400)}
+  if(reduce){c.classList.add('gone');els.forEach(function(e){e.classList.add('in')});document.body.classList.remove('lock');started=true}
+  else{c.addEventListener('click',open);window.addEventListener('load',function(){setTimeout(open,1300)});setTimeout(open,4500)}
+
+  /* parallax */
+  if(!reduce){
+    var par=[].slice.call(document.querySelectorAll('.par'));
+    var ticking=false;
+    function upd(){ticking=false;var vh=innerHeight;
+      for(var i=0;i<par.length;i++){var p=par[i],r=p.getBoundingClientRect();
+        if(r.bottom<-200||r.top>vh+200)continue;
+        var f=parseFloat(p.getAttribute('data-p'))||.08;var d=(r.top+r.height/2-vh/2)*-f;
+        p.style.transform='translate3d(0,'+d.toFixed(1)+'px,0)';}
+    }
+    addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(upd)}},{passive:true});
+    addEventListener('resize',upd);upd();
+  }
+
+  /* countdown: 17 Dec 2026 18:00 Almaty (UTC+5) */
+  var target=new Date('2026-12-17T18:00:00+05:00').getTime();
+  var spans=[].slice.call(document.querySelectorAll('.dg span'));
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    var t=Math.max(0,target-Date.now());
+    var v=[Math.floor(t/864e5),Math.floor(t/36e5)%24,Math.floor(t/6e4)%60,Math.floor(t/1e3)%60].map(pad);
+    spans.forEach(function(s,i){if(s.textContent!==v[i]){s.textContent=v[i];if(!reduce){s.classList.remove('flip');void s.offsetWidth;s.classList.add('flip')}}});
+  }
+  tick();setInterval(tick,1000);
+})();
+
+</script>
+</body>
+</html>
